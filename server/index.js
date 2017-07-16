@@ -10,12 +10,13 @@ var fs = require('fs');
 var sightengine = require('sightengine')('677410387', 'L2menNuVpMMaUnf6A53K');
 
 var connection = mysql.createConnection({
-    host: 'localhost',
+    host: '79.137.38.28',
     user: 'root',
-    password: ''
+    password: 'epita',
+    database: 'sportstagram'
 });
 
-connection.query('USE sportstagram');
+//connection.query('USE sportstagram');
 
 app.set('port', 3000);
 app.set('views', path.join(__dirname, 'views'));
@@ -330,7 +331,7 @@ app.get('/getUserFollowed', function (req, res) {
     connection.query(query, function (err, rows) {
         if (err) {
             res.status(500);
-            res.json({"Error": true, "Message": "Error executing MySQL query"});
+            res.json({"Error": true, "Message": "Error executing MySQL query" + err});
         } else {
             res.json({"Error": false, "Message": "Followed", "Followed": rows});
         }
