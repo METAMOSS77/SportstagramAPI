@@ -7,7 +7,6 @@ var formidable = require('formidable');
 var uuidV1 = require('uuid/v1');
 var util = require('util'); 
 var fs = require('fs');
-var sightengine = require('sightengine')('677410387', 'L2menNuVpMMaUnf6A53K');
 
 var connection = mysql.createConnection({
     host: '79.137.38.28',
@@ -117,57 +116,6 @@ app.post('/deleteImage', function (req, res) {
 });
 
 
-app.post('/fileupload', function (req, res) {
-    var form = new formidable.IncomingForm();
-    var request = require('request');
-    apiKey = 'acc_6a63d7dd0ba8155';
-    apiSecret = 'dab409cf6bde7900ad1d993b16323d7d';
-    form.uploadDir = path.join(__dirname, '../frontend/client/public/images');
-    form.parse(req, function (err, fields, files) {
-        var oldpath = files.filetoupload.path;
-       var guid = uuidV1();
-       var newPath = guid + files.filetoupload.name;
-        fs.rename(oldpath, path.join(form.uploadDir, newPath), function (guid, newPnewPathath, err) {
-            if (err) throw err;
-
-            sightengine.check(['nudity','wad','face-attributes']).image(path.join(form.uploadDir, newPath)).then(function(result) {
-                var ret = JSON.stringify(result);
-                var obj = JSON.parse(ret.replace('Headers: ',''));
-                var alcohol = obj['alcohol'];
-                var weapon = obj['weapon'];
-                var drugs = obj['drugs'];
-                var nudity = obj['nudity']['safe'];
-
-                if (nudity < 0.1) {
-                     return res.redirect(301, 'http://localhost:7770/information/');
-                } else {
-                    var query = "INSERT INTO `t_image`(`id`, `user_id`, `path`, `code`, `caption`, `nb_like`, `tag_1`, `tag_2`, `tag_3`) VALUES (DEFAULT,?,?,?,?,DEFAULT,?,?,?)";
-                    var table = [fields.idUser, path.join("public/images", newPath), uuidV1(), fields.caption, fields.tag1, fields.tag2, fields.tag3];
-                    query = mysql.format(query, table);
-
-                    console.log("upload query = " + query);
-                    connection.query(query, function (err, rows) {
-                    if (err) {
-                        console.log("upload error : " + err);
-                        res.json({"Error": true, "Message": "Error executing MySQL query"});
-                    } else {
-                        return res.redirect(301, 'http://localhost:7770/profil/');
-                    }
-                    });
-                }
-                //console.log(obj);
-                console.log("alcool = " + alcohol);
-                console.log("weapon = " + weapon);
-                console.log("drugs = " + drugs);
-                console.log("nudity = " + nudity);
-            })
-
-
-
-            /**/
-        });
-    });
-});
 
 app.get("/checkContent", function (req,res){
     var request = require('request'),
@@ -182,25 +130,6 @@ request.get('https://api.imagga.com/v1/tagging?url='+encodeURIComponent(imageUrl
 }).auth(apiKey, apiSecret, true);
 })
 
-app.get("/checkContent2", function (req,res){
-  sightengine.check(['nudity','wad','face-attributes']).image('http://pic.filmpornofrancais.fr/wp-content/uploads/2016/09/23098839.0.jpg').then(function(result) {
-  var ret = JSON.stringify(result);
-   var obj = JSON.parse(ret.replace('Headers: ',''));
-    var alcohol = obj['alcohol'];
-    var weapon = obj['weapon'];
-    var drugs = obj['drugs'];
-    var nudity = obj['nudity']['safe'];
-
-    if (nudity < 0.1 ) {
-        console.log("porno");
-    }
-    //console.log(obj);
-    console.log("alcool = " + alcohol);
-    console.log("weapon = " + weapon);
-    console.log("drugs = " + drugs);
-    console.log("nudity = " + nudity);
-})
-})
 
 app.get("/Json", function (req, res){
      var str = 'Headers: {"status":"success","request":{"id":"req_0XaIJxBIAHQd1T2xlAWkE","timestamp":1496876422.2539,"operations":3},"weapon":0.004,"alcohol":0.004,"drugs":0.001,"nudity":{"raw":0.296581,"partial":0.068054,"safe":0.000044},"faces":[{"x1":0.2021,"y1":0.2461,"x2":0.5042,"y2":0.8423,"features":{"left_eye":{"x":0.4167,"y":0.4353},"right_eye":{"x":0.2938,"y":0.5426},"nose_tip":{"x":0.3917,"y":0.6088},"left_mouth_corner":{"x":0.4708,"y":0.6404},"right_mouth_corner":{"x":0.3542,"y":0.7319}},"attributes":{"female":0.99,"male":0.01,"minor":0.89,"sunglasses":0.01}}],"media":{"id":"med_0XaIAFl3FzF9daclWX0ej","uri":"http://storenotrefamilleprod.blob.core.windows.net/images/cms/article/1659/1659_large.jpg"}}'
