@@ -16,6 +16,7 @@ var connection = mysql.createConnection({
     database: 'sportstagram'
 });
 
+
 //connection.query('USE sportstagram');
 
 app.set('port', 3000);
