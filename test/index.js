@@ -19,6 +19,7 @@ test('Correct users returned', function (t) {
         });
 });
 
+
 test('Correct users returned', function (t) {
     request(app)
         .get('/getUserFollowed?idUser=21')
