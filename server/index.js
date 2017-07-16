@@ -36,6 +36,11 @@ function isEmptyObject(obj) {
     return !Object.keys(obj).length;
 }
 
+
+app.get('/close', function (req, res) {
+    process.exit();
+});
+
 app.get('/guid', function (req, res) {
     const uuidV1 = require('uuid/v1');
     res.send(uuidV1());
@@ -540,5 +545,6 @@ app.post('/upload', function (req, res) {
 
 });
 
-app.listen(app.get('port'));
-console.log('Express server listening on port ' + app.get('port'));
+//app.listen(app.get('port'));
+//console.log('Express server listening on port ' + app.get('port'));
+module.exports = app;

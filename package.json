@@ -6,10 +6,16 @@
   "author": "",
   "license": "ISC",
   "scripts": {
-    "start": "node Server.js"
+    "start": "node index.js",
+    "test": "node test | tap-spec"
   },
   "dependencies": {
     "express": "^4.15.2",
     "sightengine": "^1.0.0"
+  },
+  "devDependencies": {
+    "supertest": "^3.0.0",
+    "tap-spec": "^4.1.1",
+    "tape": "^4.7.0"
   }
 }
