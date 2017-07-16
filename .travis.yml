@@ -4,3 +4,7 @@ node_js:
   - "6"
 install:
   - npm install
+deploy:
+  provider: heroku
+  api_key:
+    secure: "1b67560e-506d-4786-9bbd-b0425ae48107"
